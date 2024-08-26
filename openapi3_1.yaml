@@ -1,0 +1,132 @@
+openapi: 3.1.0
+info:
+  title: Fair Bank application
+  description: |-
+    This is a web application for a bank. The user will be able to
+    sign-up & sign in to the bank using a username & password, and validating their
+    phone number using a one-time passcode sent by SMS message.
+
+    Some useful links:
+    - [The Pet Store repository](https://github.com/swagger-api/swagger-petstore)
+    - [The source API definition for the Pet Store](https://github.com/swagger-api/swagger-petstore/blob/master/src/main/resources/openapi.yaml)
+
+  contact:
+    email: apiteam@swagger.io
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.11
+servers:
+  - url: https://fairbank.com
+tags:
+  - name: bank
+    description: Operations with your bank account
+    externalDocs:
+      description: Find out more
+      url: http://swagger.io
+  
+  - name: user
+    description: Operations about user
+paths:
+  /logIn:
+    get:
+      tags:
+        - user
+      summary: Logs user into the system
+      description: ''
+      operationId: loginUser
+      parameters:
+        - name: username
+          in: query
+          description: The user name for login
+          required: false
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password for login in clear text
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          headers:
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Invalid username/password supplied
+  /signUp:
+    post:
+      tags:
+        - signUp
+      summary: Sign up user
+      description: This can be done by any user.
+      operationId: signUpUser
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /dashboard:
+    get:
+      tags:
+        - dashboard
+      summary: Display dashboard
+      description: This can be done ONLY by logged user.
+      operationId: getDashboard
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+      security: 
+        - bearerAuth: []
+components:
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT    # optional, arbitrary value for documentation purposes
+  schemas:
+    User:
+      type: object
+      properties:
+        email:
+          type: string
+          examples: [john@email.com]
+        password:
+          type: string
+          examples: ['12345']
+        phone:
+          type: string
+          examples: ['12345']
+      xml:
+        name: user
+    Dashboard:
+      type: object
+      properties: 
+        accountBalance:
+          type: integer
+          examples: 
+            - '1000000'
+
+
+    
