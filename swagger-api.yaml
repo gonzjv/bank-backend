@@ -63,6 +63,17 @@ paths:
                 type: string
         '400':
           description: Invalid username/password supplied
+  /logout:
+    get:
+      tags:
+        - logout
+      summary: Logs out current logged in user session
+      description: ''
+      operationId: logoutUser
+      parameters: []
+      responses:
+        default:
+          description: successful operation
   /signUp:
     post:
       tags:
