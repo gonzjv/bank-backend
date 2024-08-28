@@ -1,11 +1,7 @@
-import bodyParser from "body-parser";
-import express from "express";
-import {StatusCodes} from 'http-status-codes'
+import asyncHandler from 'express-async-handler';
+import { StatusCodes } from 'http-status-codes';
 
-const router = express.Router();
-const jsonParser = bodyParser.json();
-
-router.post("/", jsonParser, function (req, res) {
+const userSignUp = asyncHandler(async (req,res,next) => {
     console.log("req.body", req.body);
     const userExist = false;
     
@@ -16,4 +12,4 @@ router.post("/", jsonParser, function (req, res) {
     }
 });
 
-export default router;
+export default {userSignUp};
