@@ -1,15 +1,49 @@
 import asyncHandler from 'express-async-handler';
 import { StatusCodes } from 'http-status-codes';
+import jwt from 'jsonwebtoken'
+
+const map = new Map();
+const JWT_SECRET_KEY = "the-most-secret-key";
 
 const userSignUp = asyncHandler(async (req,res,next) => {
     console.log("req.body", req.body);
-    const userExist = false;
+    const {email, password} = req.body;
+    const isUserExist = map.has(email);
     
-    if (true === userExist) {
+    if (true === isUserExist) {
         res.status(StatusCodes.NOT_ACCEPTABLE).send("ERROR: user already esists")
     } else {
-        res.status(StatusCodes.OK).send("SUCCESS: user registered")
+        map.set(email, password);
+
+        res.status(StatusCodes.OK).json("SUCCESS: User registered!");
     }
 });
 
-export default {userSignUp};
+const login = asyncHandler(async (req, res, next) => {
+    console.log("req.body", req.body);
+    const {email, password} = req.body;
+
+    if(map.has(email)) {
+        const payload = {
+            email: email,
+            password: password
+        };
+        
+        const token = jwt.sign(
+            payload,
+            JWT_SECRET_KEY,
+            { expiresIn: '1h' }
+        );
+        
+        const userData = {
+            email: email,
+            token: token,
+        };
+        
+        res.status(StatusCodes.OK).json(userData);
+    } else {
+        res.status(StatusCodes.UNAUTHORIZED).json("Bad username/password combination");
+    }
+});
+
+export default {userSignUp, login};

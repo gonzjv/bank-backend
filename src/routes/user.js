@@ -5,11 +5,8 @@ import userController from "../controllers/userController.js";
 const router = express.Router();
 const jsonParser = bodyParser.json();
 
-router.get("/login", function (req, res) {
-    res.send("Response on /user/login GET ")
-});
-
 router.post("/signup", jsonParser, userController.userSignUp);
+router.post("/login", jsonParser, userController.login);
 
 
 export default router;
