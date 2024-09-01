@@ -2,14 +2,11 @@ import express from "express";
 import userRouter from "./routes/user.js"
 
 const app = express();
+// use .ENV variable. dotenv package
 const port = 3000;
 
-app.get("/", function (req, res) {
-  res.send("Hello World!");
-});
+app.use("/api/v1/user", userRouter);
 
-app.use("/user", userRouter);
-
-app.listen(port, function () {
+app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`);
-});
+}).on('error', (err)=>{console.log(err)});

@@ -7,6 +7,8 @@ const JWT_SECRET_KEY = "the-most-secret-key";
 
 const userSignUp = asyncHandler(async (req,res,next) => {
     console.log("req.body", req.body);
+
+    //  ❌  check email and pass in body !!!
     const {email, password} = req.body;
     const isUserExist = map.has(email);
     
@@ -25,8 +27,8 @@ const login = asyncHandler(async (req, res, next) => {
 
     if(map.has(email)) {
         const payload = {
-            email: email,
-            password: password
+            email,
+            password
         };
         
         const token = jwt.sign(
