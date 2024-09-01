@@ -13,7 +13,8 @@ const userSignUp = asyncHandler(async (req,res,next) => {
     const isUserExist = map.has(email);
     
     if (true === isUserExist) {
-        res.status(StatusCodes.NOT_ACCEPTABLE).send("ERROR: user already esists")
+        res.status(StatusCodes.NOT_ACCEPTABLE).send("ERROR: user already esists");
+        next();
     } else {
         map.set(email, password);
 
@@ -46,6 +47,10 @@ const login = asyncHandler(async (req, res, next) => {
     } else {
         res.status(StatusCodes.UNAUTHORIZED).json("Bad username/password combination");
     }
+});
+
+const logout = asyncHandler(async (req,res,next) => {
+
 });
 
 export default {userSignUp, login};
