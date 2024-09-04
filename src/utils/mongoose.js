@@ -1,7 +1,7 @@
 import mongoose from 'mongoose'
 
 const connectToMongo =  async () => {
-    await mongoose.connect("mongodb://localhost:27017/users");
+    await mongoose.connect("mongodb://mongodb:27017/users");
 };
 
 
@@ -19,4 +19,4 @@ const initDatabase =  async () => {
 };
 
 
-export default {connectToMongo, initDatabase};
+export {connectToMongo, initDatabase};

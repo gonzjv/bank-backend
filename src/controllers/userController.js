@@ -1,8 +1,8 @@
 import asyncHandler from 'express-async-handler';
 import { StatusCodes } from 'http-status-codes';
 import jwt from 'jsonwebtoken'
-import mongoose from '../utils/mongoose';
-import userModel from '../models/userModel';
+import {connectToMongo} from '../utils/mongoose.js';
+import {User} from '../models/userModel.js';
 
 const map = new Map();
 const JWT_SECRET_KEY = "the-most-secret-key";
@@ -19,8 +19,12 @@ const userSignUp = asyncHandler(async (req,res,next) => {
         next();
     } else {
         map.set(email, password);
-        const newUser = new userModel.User({email: email, password: password});
+        await connectToMongo();
+        const newUser = new User({email: email, password: password});
         await newUser.save();
+
+        const users = await User.find();
+        console.log(users);
 
         res.status(StatusCodes.OK).json("SUCCESS: User registered!");
     }

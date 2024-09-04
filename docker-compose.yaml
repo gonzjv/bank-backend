@@ -3,6 +3,8 @@ services:
   nodejs:
     image: bank-app
     build: .
+    ports:
+      - '3000:3000'
     depends_on:
       - mongodb
   mongodb:
