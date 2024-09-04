@@ -1,25 +1,19 @@
 import asyncHandler from 'express-async-handler';
 import { StatusCodes } from 'http-status-codes';
 import jwt from 'jsonwebtoken'
-import {connectToMongo} from '../utils/mongoose.js';
 import {User} from '../models/userModel.js';
 
-const map = new Map();
 const JWT_SECRET_KEY = "the-most-secret-key";
 
 const userSignUp = asyncHandler(async (req,res,next) => {
-    console.log("req.body", req.body);
-
-    //  ❌  check email and pass in body !!!
     const {email, password} = req.body;
-    const isUserExist = map.has(email);
-    
-    if (true === isUserExist) {
+
+    if (null == email || null == password) {
+        res.status(StatusCodes.NOT_ACCEPTABLE).send("ERROR: both -email- and -password- should be provided");
+    } else if (null !== await User.findOne({email: email})) {
         res.status(StatusCodes.NOT_ACCEPTABLE).send("ERROR: user already esists");
         next();
     } else {
-        map.set(email, password);
-        await connectToMongo();
         const newUser = new User({email: email, password: password});
         await newUser.save();
 
@@ -31,10 +25,12 @@ const userSignUp = asyncHandler(async (req,res,next) => {
 });
 
 const login = asyncHandler(async (req, res, next) => {
-    console.log("req.body", req.body);
     const {email, password} = req.body;
+    
+    const user = await User.findOne({email: email});
+    console.log("User from db:", user);
 
-    if(map.has(email)) {
+    if(null !== user && user.password == password) {
         const payload = {
             email,
             password
