@@ -5,6 +5,6 @@ import {checkToken} from '../controllers/helpers.js'
 const router = express.Router();
 
 router.get("/", checkToken, dashboardController.indexHandler);
-router.get("/transaction", checkToken, dashboardController.indexHandler);
+router.post("/transaction", checkToken, dashboardController.transactionHandler);
 
 export default router;

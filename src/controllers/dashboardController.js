@@ -33,10 +33,15 @@ const indexHandler = asyncHandler(async (req,res,next) => {
       });
     } else {
       if (user.account.balance > req.body.amount) {
-        // const result = await User.updateOne({email: req.body.email}, account.balance:)
+         
+/*         const result = await User.updateOne({email: req.body.email}, account.balance:)
+ */
+        user.account.balance -= req.body.amount;
+        const result = await user.save();
+        console.log("decrease result:", result);  
       }
       res.status(StatusCodes.OK).json({balance: user.account.balance});
     };
   });
 
-export default {indexHandler};
+export default {indexHandler, transactionHandler};
