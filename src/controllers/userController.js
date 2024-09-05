@@ -1,7 +1,8 @@
 import asyncHandler from 'express-async-handler';
 import { StatusCodes } from 'http-status-codes';
 import jwt from 'jsonwebtoken'
-import {User} from '../models/userModel.js';
+import { User } from '../models/userModel.js';
+import { Account } from '../models/accountModel.js';
 
 const JWT_SECRET_KEY = "the-most-secret-key";
 
@@ -14,7 +15,8 @@ const userSignUp = asyncHandler(async (req,res,next) => {
         res.status(StatusCodes.NOT_ACCEPTABLE).send("ERROR: user already esists");
         next();
     } else {
-        const newUser = new User({email: email, password: password});
+        const newAccount = new Account({id: new Date().toISOString() + email, balance: Math.random() * 100});
+        const newUser = new User({email: email, password: password, account: newAccount});
         await newUser.save();
 
         const users = await User.find();
