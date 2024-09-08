@@ -10,17 +10,28 @@ const userSignUp = asyncHandler(async (req,res,next) => {
     const {email, password} = req.body;
 
     if (null == email || null == password) {
-        res.status(StatusCodes.NOT_ACCEPTABLE).send("ERROR: both -email- and -password- should be provided");
+        res.status(StatusCodes.NOT_ACCEPTABLE).send(
+            "ERROR: both -email- and -password- should be provided"
+        );
     } else if (null !== await User.findOne({email: email})) {
-        res.status(StatusCodes.NOT_ACCEPTABLE).send("ERROR: user already esists");
+        res.status(StatusCodes.NOT_ACCEPTABLE).send(
+            "ERROR: user already esists"
+        );
         next();
     } else {
-        const newAccount = new Account({id: new Date().toISOString() + email, balance: Math.random() * 100});
-        const newUser = new User({email: email, password: password, account: newAccount});
+        // use createDate on place of id
+        // create collection in mongo to verify an email
+        const newAccount = new Account({
+            id: new Date().toISOString() + email,
+            balance: Math.random() * 100
+        });
+        // ❌ hash password !!!
+        const newUser = new User({
+            email: email,
+            password: password,
+            account: newAccount
+        });
         await newUser.save();
-
-        const users = await User.find();
-        console.log(users);
 
         res.status(StatusCodes.OK).json("SUCCESS: User registered!");
     }
@@ -35,7 +46,6 @@ const login = asyncHandler(async (req, res, next) => {
     if(null !== user && user.password == password) {
         const payload = {
             email,
-            password
         };
         
         const token = jwt.sign(
@@ -45,7 +55,6 @@ const login = asyncHandler(async (req, res, next) => {
         );
         
         const userData = {
-            email: email,
             token: token,
         };
         

@@ -4,6 +4,7 @@ import { accountSchema } from './accountModel.js';
 const userSchema = new mongoose.Schema({
     email: String,
     password: String,
+    phoneNumber: Number,
     account: accountSchema
 });
 
