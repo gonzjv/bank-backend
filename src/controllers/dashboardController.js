@@ -24,6 +24,7 @@ const indexHandler = asyncHandler(async (req,res,next) => {
   
   const transactionHandler = asyncHandler(async (req,res,next) => {
     const user = await getUser(req);
+    console.log("req.body : ", req.body);
     const receiver = await User.findOne({email: req.body.email}); 
     console.log("user.balance : ", user.account.balance);
 
