@@ -12,13 +12,16 @@ const indexHandler = asyncHandler(async (req,res,next) => {
     const user = req.body.user; 
     const receiver = await User.findOne({email: req.body.email}); 
     console.log("user.balance : ", user.account.balance);
-
-    if (null == receiver) {
+    
+    if (null == req.body.amount) {
+      res.status(StatusCodes.NOT_ACCEPTABLE).json({
+        message: "Amount of money to transfer is NOT provided in request body"
+      });
+    } else if (null == receiver) {
       res.status(StatusCodes.NOT_ACCEPTABLE).json({
         message: "There is not such a user to transfer money"
       });
     } else if(user.account.balance < req.body.amount){
-      //verify body contents
       res.status(StatusCodes.NOT_ACCEPTABLE).json({
         message: "There is not enough money"
       });
