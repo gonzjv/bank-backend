@@ -28,10 +28,10 @@ tags:
   - name: user
     description: Operations about user
 paths:
-  /logIn:
+  /api/v1/user/login:
     get:
       tags:
-        - user
+        - api/v1/user
       summary: Logs user into the system
       description: ''
       operationId: loginUser
@@ -63,10 +63,10 @@ paths:
                 type: string
         '400':
           description: Invalid username/password supplied
-  /logout:
+  /api/v1/user/logout:
     get:
       tags:
-        - logout
+        - api/v1/user
       summary: Logs out current logged in user session
       description: ''
       operationId: logoutUser
@@ -74,10 +74,10 @@ paths:
       responses:
         default:
           description: successful operation
-  /signUp:
+  /api/v1/user/signUp:
     post:
       tags:
-        - signUp
+        - api/v1/user
       summary: Sign up user
       description: This can be done by any user.
       operationId: signUpUser
@@ -97,13 +97,30 @@ paths:
         '400':
           description: user already exist
 
-  /dashboard:
+  /api/v1/dashboard:
     get:
       tags:
-        - dashboard
+        - api/v1/dashboard
       summary: Display dashboard
       description: This can be done ONLY by logged user.
       operationId: getDashboard
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+      security: 
+        - bearerAuth: []
+        
+  /api/v1/dashboard/transaction:
+    post:
+      tags:
+        - api/v1/dashboard
+      summary: Make transaction
+      description: This can be done ONLY by logged user.
+      operationId: makeTransaction
       responses:
         default:
           description: successful operation
