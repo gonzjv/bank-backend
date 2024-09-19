@@ -10,11 +10,11 @@ const userSignUp = asyncHandler(async (req,res,next) => {
     const {email, password} = req.body;
 
     if (null == email || null == password) {
-        res.status(StatusCodes.NOT_ACCEPTABLE).send(
+        res.status(StatusCodes.NOT_ACCEPTABLE).json(
             "ERROR: both -email- and -password- should be provided"
         );
     } else if (null !== await User.findOne({email: email})) {
-        res.status(StatusCodes.NOT_ACCEPTABLE).send(
+        res.status(StatusCodes.NOT_ACCEPTABLE).json(
             "ERROR: user already esists"
         );
         next();

@@ -17,7 +17,7 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.11
 servers:
-  - url: https://fairbank.com
+  - url: http://localhost:3000
 tags:
   - name: bank
     description: Operations with your bank account
@@ -29,25 +29,32 @@ tags:
     description: Operations about user
 paths:
   /api/v1/user/login:
-    get:
+    post:
       tags:
         - api/v1/user
       summary: Logs user into the system
       description: ''
       operationId: loginUser
-      parameters:
-        - name: username
-          in: query
-          description: The user name for login
-          required: false
-          schema:
-            type: string
-        - name: password
-          in: query
-          description: The password for login in clear text
-          required: false
-          schema:
-            type: string
+      # parameters:
+      #   - name: username
+      #     in: 
+      #     description: The user name for login
+      #     required: false
+      #     schema:
+      #       type: string
+      #   - name: password
+      #     in: query
+      #     description: The password for login in clear text
+      #     required: false
+      #     schema:
+      #       type: string
+      requestBody:
+        description: Update an existent pet in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+
       responses:
         '200':
           description: successful operation
@@ -146,7 +153,7 @@ components:
         password:
           type: string
           examples: ['12345']
-        phone:
+        name:
           type: string
           examples: ['12345']
       xml:
