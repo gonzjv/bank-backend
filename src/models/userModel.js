@@ -3,8 +3,11 @@ import { accountSchema } from './accountModel.js';
 
 const userSchema = new mongoose.Schema({
     email: String,
+    name: String,
     password: String,
     phoneNumber: Number,
+    isVerified: Boolean,
+    verificationCode: String,
     account: accountSchema
 });
 

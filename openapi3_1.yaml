@@ -35,21 +35,8 @@ paths:
       summary: Logs user into the system
       description: ''
       operationId: loginUser
-      # parameters:
-      #   - name: username
-      #     in: 
-      #     description: The user name for login
-      #     required: false
-      #     schema:
-      #       type: string
-      #   - name: password
-      #     in: query
-      #     description: The password for login in clear text
-      #     required: false
-      #     schema:
-      #       type: string
       requestBody:
-        description: Update an existent pet in the store
+        description: Logs user
         content:
           application/json:
             schema:
@@ -101,6 +88,24 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
+        '400':
+          description: user already exist
+  /api/v1/user/confirmation:
+    post:
+      tags:
+        - api/v1/user
+      summary: Confirmation of users email
+      description: This can be done by a user that signing up.
+      operationId: confirmEmail
+      requestBody:
+        description: Info to confirm a registrastion
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfirmationData'
+      responses:
+        '200':
+          description: successful operation
         '400':
           description: user already exist
 
@@ -158,6 +163,16 @@ components:
           examples: ['12345']
       xml:
         name: user
+    ConfirmationData:
+      type: object
+      properties:
+        userEmail: 
+          type: string
+          examples: [joe@mail.com]
+        code:
+          type: string
+          examples: ['qwerty']
+
     Dashboard:
       type: object
       properties: 
