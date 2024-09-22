@@ -5,8 +5,37 @@ import { User } from '../models/userModel.js';
 import { Account } from '../models/accountModel.js';
 import crypto from 'node:crypto'
 import nodemailer from 'nodemailer'
+import 'dotenv/config'
 
 const JWT_SECRET_KEY = "the-most-secret-key";
+
+const transporter = nodemailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth : {
+        user: process.env.EMAIL_ADDRESS, 
+        pass: process.env.EMAIL_PASSWORD, 
+    },
+});
+
+const sendConfirmationCode = async (email, code) => {
+    const mailOptions = {
+        from: process.env.EMAIL_ADDRESS,
+        to: email,
+        subject: "Confirmation code. Fair Bank",
+        html: 
+        `<b>
+            Hello, dear!
+        </b>
+        <div>Your code is : ${code}</div>
+        `,
+    };
+    console.log("transporter: ", transporter.options);
+
+    return await transporter.sendMail(mailOptions);
+};
+
 
 const userSignUp = asyncHandler(async (req,res,next) => {
     const {email, name, password} = req.body;
@@ -15,12 +44,14 @@ const userSignUp = asyncHandler(async (req,res,next) => {
         res.status(StatusCodes.NOT_ACCEPTABLE).json(
             "ERROR: both -email- and -password- should be provided"
         );
-    } else if (null !== await User.findOne({email: email})) {
-        res.status(StatusCodes.NOT_ACCEPTABLE).json(
-            "ERROR: user already esists"
-        );
-        next();
-    } else {
+    }
+    //  else if (null !== await User.findOne({email: email})) {
+    //     res.status(StatusCodes.NOT_ACCEPTABLE).json(
+    //         "ERROR: user already esists"
+    //     );
+    //     next();
+    // } 
+    else {
         // use createDate on place of id
         // create collection in mongo to verify an email
         const newAccount = new Account({
@@ -39,10 +70,10 @@ const userSignUp = asyncHandler(async (req,res,next) => {
         console.log("new user:", newUser);
 
         await newUser.save();
-        const info = await senConfirmationCode(newUser.email, newUser.verificationCode);
+        const info = await sendConfirmationCode(newUser.email, newUser.verificationCode);
         console.log("confirm response: ", info);
 
-        res.status(StatusCodes.OK).json("SUCCESS: User registered!");
+        res.status(StatusCodes.OK).json("SUCCESS: User registered and waits for email confirmation!");
     }
 });
 
@@ -55,17 +86,19 @@ const userConfirm = asyncHandler(async (req,res,next) => {
         );
     } else  {
         const user = await User.findOne({email: email});
-
+        console.log ("FLAG      !!! user:", user);
+        
         if (null == user) {
             res.status(StatusCodes.NOT_ACCEPTABLE).json(
                 "ERROR: user doesnt esist"
             );
-            next();
         } else if (user.verificationCode == code){
             user.isVerified = true;
             await user.save();
             res.status(StatusCodes.OK).json("SUCCESS: User verified!");
-            next();
+        } else {
+            res.status(StatusCodes.NOT_ACCEPTABLE).json("ERROR: Verification code is not correct!");
+
         }
     } 
 });
@@ -104,27 +137,5 @@ const logout = asyncHandler(async (req,res,next) => {
 
 });
 
-const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    service: "gmail",
-    port: 465,
-    secure: true,
-    auth : {
-        user: process.env.EMAIL_ADDRESS, 
-        pass: process.env.EMAIL_PASSWORD, 
-    },
-});
-
-const senConfirmationCode = async (email, code) => {
-    const mailOptions = {
-        from: process.env.EMAIL_ADDRESS,
-        to: email,
-        subject: "Confirmation code. Fair Bank",
-        text: `Your code is: ${code}`,
-        html: "<b>Hello world?</b>",
-    };
-
-    return await transporter.sendMail(mailOptions);
-};
 
 export default {userSignUp, userConfirm, login};
