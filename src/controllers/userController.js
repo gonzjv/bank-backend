@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import { User } from '../models/userModel.js';
 import { Account } from '../models/accountModel.js';
 import crypto from 'node:crypto'
+import nodemailer from 'nodemailer'
 
 const JWT_SECRET_KEY = "the-most-secret-key";
 
@@ -38,6 +39,8 @@ const userSignUp = asyncHandler(async (req,res,next) => {
         console.log("new user:", newUser);
 
         await newUser.save();
+        const info = await senConfirmationCode(newUser.email, newUser.verificationCode);
+        console.log("confirm response: ", info);
 
         res.status(StatusCodes.OK).json("SUCCESS: User registered!");
     }
@@ -100,5 +103,28 @@ const login = asyncHandler(async (req, res, next) => {
 const logout = asyncHandler(async (req,res,next) => {
 
 });
+
+const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    service: "gmail",
+    port: 465,
+    secure: true,
+    auth : {
+        user: process.env.EMAIL_ADDRESS, 
+        pass: process.env.EMAIL_PASSWORD, 
+    },
+});
+
+const senConfirmationCode = async (email, code) => {
+    const mailOptions = {
+        from: process.env.EMAIL_ADDRESS,
+        to: email,
+        subject: "Confirmation code. Fair Bank",
+        text: `Your code is: ${code}`,
+        html: "<b>Hello world?</b>",
+    };
+
+    return await transporter.sendMail(mailOptions);
+};
 
 export default {userSignUp, userConfirm, login};

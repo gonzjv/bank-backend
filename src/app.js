@@ -3,10 +3,12 @@ import cors from 'cors';
 import userRouter from "./routes/userRouter.js"
 import dashboardRouter from "./routes/dashboardRouter.js"
 import { connectToMongo } from "./utils/mongoose.js";
+import 'dotenv/config'
 
 const app = express();
 // use .ENV variable. dotenv package
-const port = 3000;
+// const port = 3000;
+const port = process.env.PORT;
 await connectToMongo();
 
 // Define the CORS options
