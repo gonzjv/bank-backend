@@ -2,6 +2,7 @@ import asyncHandler from 'express-async-handler';
 import { StatusCodes } from 'http-status-codes';
 import jwt from 'jsonwebtoken';
 import { User } from '../models/userModel.js';
+import { Transaction } from '../models/transactionModel.js';
 
 const indexHandler = asyncHandler(async (req,res,next) => {
     const user = await User.findOne({email: req.body.email}); 
@@ -26,8 +27,15 @@ const indexHandler = asyncHandler(async (req,res,next) => {
         message: "There is not enough money"
       });
     } else {
+      const transaction = new Transaction({
+        date: new Date().toISOString(),
+        from: user.email,
+        to: receiver.email
+      });
       user.account.balance -= req.body.amount;
+      user.account.transactions.addToSet(transaction);
       receiver.account.balance += req.body.amount;
+      receiver.account.transactions.addToSet(transaction);
       const resultUser = await user.save();
       const resultReceiver = await receiver.save();
       console.log("resultUser:", resultUser);  
