@@ -127,6 +127,7 @@ const login = asyncHandler(async (req, res, next) => {
         
         const userData = {
             token: token,
+            userName: user.name
         };
         
         res.status(StatusCodes.OK).json(userData);
