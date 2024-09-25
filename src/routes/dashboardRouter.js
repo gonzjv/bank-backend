@@ -6,7 +6,7 @@ import bodyParser from "body-parser";
 const router = express.Router();
 const jsonParser = bodyParser.json();
 
-router.get("/", jsonParser, checkToken, dashboardController.indexHandler);
+router.post("/", jsonParser, checkToken, dashboardController.indexHandler);
 router.post("/transaction",jsonParser,  checkToken, dashboardController.transactionHandler);
 
 export default router;

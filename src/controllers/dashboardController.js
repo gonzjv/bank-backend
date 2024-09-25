@@ -4,8 +4,8 @@ import jwt from 'jsonwebtoken';
 import { User } from '../models/userModel.js';
 
 const indexHandler = asyncHandler(async (req,res,next) => {
-    const user = req.body.user; 
-    res.status(StatusCodes.OK).json({balance: user.account.balance});
+    const user = await User.findOne({email: req.body.email}); 
+    res.status(StatusCodes.OK).json(user);
   });
   
   const transactionHandler = asyncHandler(async (req,res,next) => {
