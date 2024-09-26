@@ -30,7 +30,8 @@ const indexHandler = asyncHandler(async (req,res,next) => {
       const transaction = new Transaction({
         date: new Date().toISOString(),
         from: user.email,
-        to: receiver.email
+        to: receiver.email,
+        amount: req.body.amount
       });
       user.account.balance -= req.body.amount;
       user.account.transactions.addToSet(transaction);
