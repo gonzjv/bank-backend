@@ -11,16 +11,8 @@ const app = express();
 const port = process.env.PORT;
 await connectToMongo();
 
-// Define the CORS options
-/* 
-const corsOptions = {
-  credentials: true,
-  origin: ['http://localhost:5173', 'http://localhost:80'] // Whitelist the domains you want to allow
-};
-*/
-
-//app.use(cors(corsOptions));
 app.use(cors());
+app.use(express.static("public"));
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/dashboard", dashboardRouter);
 
